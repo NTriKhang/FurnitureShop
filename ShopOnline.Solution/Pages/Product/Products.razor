@@ -1,0 +1,23 @@
+﻿@page "/"
+@using ShopOnline.Models.dtos;
+
+
+@inherits ProductBase
+
+@if(ProductDtos == null)
+{
+	<div class="h-100 d-flex align-items-center justify-content-center">
+	  <DisplaySpinner></DisplaySpinner>
+	</div>
+}
+else{
+
+	foreach(var prodGroup in GetProductGroupByCat())
+	{
+		<h3>@GetCatName(prodGroup)</h3>
+		<DisplayItem products="@prodGroup"></DisplayItem>
+		<hr />
+	}
+
+	
+}

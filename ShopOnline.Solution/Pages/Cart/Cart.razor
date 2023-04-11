@@ -1,0 +1,53 @@
+﻿@page "/Cart"
+@inherits CartBase
+@attribute [Authorize]
+				
+<AuthorizeView>
+    <Authorized>
+		@if (cartItems == null)
+		{
+			<div class="h-100 d-flex align-items-center justify-content-center">
+				<DisplaySpinner></DisplaySpinner>
+			</div>
+		}
+		else
+		{
+			<h3 class="mb-3">Cart Item</h3>
+			<div class="row">
+				<div class="col-md-8">
+					@foreach (var item in cartItems)
+					{
+						<div class="row">
+							<div class="col-md-6">
+								<img src="@item.ProductImageURL" class="img-thumbnail">
+							</div>
+							<div class="col-md-6">
+								<h3 class="mb-3">@item.ProductName</h3>
+								<p class="mb-5">@item.ProductDescription</p>
+								<p class="mb-3">
+									Price:
+									<b>@item.Price</b>
+									<input class="w-25" type="number" @bind="@item.Qty" @oninput="() => (UpdateQty_Input(item.Id))" />
+									<button id="@item.Id" class="btn btn-success update-btn" @onclick="() => (UpdateQty_Click(item.Id, item.Qty))">Update</button>
+								</p>
+								<a class="btn btn-danger mb-3" @onclick="() => (DeleteButton(item.Id))">Remove</a>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="col-md-4">
+					<h3 class="mb-3">Cart Summary</h3>
+					<p class="mb-2">Total: @totalPrice</p>
+					<p class="mb-2">Quantity: @qty</p>
+					@{
+						if(totalPrice != 0)
+						{
+							<a class="btn btn-success" @onclick="() => (CheckOut(cartItems))">Proceed to Checkout</a>
+						}
+					}
+				</div>
+			</div>
+		}
+	</Authorized>
+
+</AuthorizeView>

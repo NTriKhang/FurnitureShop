@@ -1,0 +1,49 @@
+﻿@inherits ReviewBase
+@using Models.dtos 
+
+@{
+    <div class="container mb-3">
+       <div class="mb-3">
+            <h3 class="text-black">Review (@Reviews.Count())</h3>
+        </div>
+        <AuthorizeView>
+            <Authorized>
+                <form class="form-control mb-lg-3">
+                    <a @onclick="()=>Onclick_star(1)"><i class="oi oi-star" style="color:black" id="1"></i></a>
+                    <a @onclick="()=>Onclick_star(2)"><i class="oi oi-star" style="color:black" id="2"></i></a>
+                    <a @onclick="()=>Onclick_star(3)"><i class="oi oi-star" style="color:black" id="3"></i></a>
+                    <a @onclick="()=>Onclick_star(4)"><i class="oi oi-star" style="color:black" id="4"></i></a>
+                    <a @onclick="()=>Onclick_star(5)"><i class="oi oi-star" style="color:black" id="5"></i></a>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" @bind=@reviewToAddDto.Content></textarea>
+                        <label for="floatingTextarea2">Comments</label>
+                    </div>
+                    <div style="text-align:right">
+                        <button @onclick="()=>Onclick_submit()" type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </form>
+            </Authorized>
+        </AuthorizeView>
+        
+        @foreach(var review in Reviews)
+        {
+            <div style="border: 1px solid grey " class="mb-lg-3  w-75">
+                <div class="card-header row bg-secondary text-white" style="margin:0">
+                    <div class="col-lg-3">@review.UserName </div>
+                    <div class="col-lg-4">
+                        @for (int rate = 0; rate < review.Ratings; rate++)
+                        {
+                            <i class="oi oi-star" style="color:orange"></i>
+                        }
+                    </div>
+                    <div class="col-lg-5">@review.DateReview</div>
+                </div>
+                <div class="card-body">
+                    <div class="text-body">
+                        @review.Content
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

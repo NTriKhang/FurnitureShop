@@ -1,0 +1,27 @@
+﻿@inject AuthenticationStateProvider AuthStateProvider;
+@inject NavigationManager NavMng;
+@inject ICartItemServices CartServices;
+@inject ILocalStorageService LocalStorage;
+
+<AuthorizeView>
+	<NotAuthorized>
+		<button class="btn btn-primary m-lg-3" @onclick="()=>Login()">Login</button>
+	</NotAuthorized>
+	<Authorized>
+		<button class="btn btn-danger m-lg-3" @onclick="()=>Logout()">Logout</button>
+	</Authorized>
+</AuthorizeView>
+
+@code {
+	void Login()
+	{
+		NavMng.NavigateTo("Login");
+	}
+	async Task Logout()
+	{
+		await LocalStorage.RemoveItemAsync("token");
+		await LocalStorage.RemoveItemAsync("UserName");
+		CartServices.RaiseEventOnShoppingCartChanged(0);
+		await AuthStateProvider.GetAuthenticationStateAsync();
+	}
+}

@@ -1,0 +1,14 @@
+﻿@inject ILocalStorageService localStore;
+
+<AuthorizeView>
+	<NotAuthorized>
+		<a class="btn btn-primary" href="Register">Register</a>
+	</NotAuthorized>
+	<Authorized>
+		<span style="margin-right:auto" class="btn btn-info">Hello @context.User.Identity.Name</span>
+	</Authorized>
+</AuthorizeView>
+
+@code {
+
+}

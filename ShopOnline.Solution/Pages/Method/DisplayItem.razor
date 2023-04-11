@@ -1,0 +1,25 @@
+﻿@using ShopOnline.Models.dtos;
+@inherits DisplayItemBase;
+
+@{
+	<div class="row mb-3">
+		@foreach(var product in products)
+		{
+			<div class="col-sm-3 mb-3">
+				<a href="/ProductDetail/@product.Id">
+					<div class="card">
+						<img src="@product.ImageURL" class="img-thumbnail">
+						<div class="card-body">
+							<h3 class="card-title mb-3">
+								@product.Name
+							</h3>
+							<p class="card-text">
+								@product.Price.ToString()
+							</p>
+						</div>
+					</div>
+				</a>
+			</div>
+		}
+	</div>
+}
