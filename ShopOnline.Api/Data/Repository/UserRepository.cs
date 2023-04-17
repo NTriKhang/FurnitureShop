@@ -41,15 +41,15 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 			}
 			return null;
 		}
-		public async Task<User> UploadImage(string imageUrl, User user)
+		public async Task UploadImage(string imageUrl, User user)
 		{
 			if (imageUrl != null)
 			{
 				user.ImageUrl = imageUrl;
 				await _dbContext.SaveChangesAsync();
-				return user;
+				return;
 			}
-			return user;
+			throw new NotImplementedException();
 		}
 		public Task<User> DeleteUser(User userToAdd)
 		{

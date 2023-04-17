@@ -45,7 +45,7 @@ namespace ShopOnline.Api.Controllers
 					var trustedFileNameForDisplay =
 						WebUtility.HtmlEncode(untrustedFileName);
 					trustedFileNameForFileStorage = Path.GetRandomFileName();
-					var path = Path.Combine(_webHostEnvironment.ContentRootPath,
+					var path = Path.Combine(_webHostEnvironment.WebRootPath, "Image",
 						"unsafe_uploads",
 						trustedFileNameForFileStorage);
 					using (FileStream fs = new(path, FileMode.Create))
@@ -53,7 +53,11 @@ namespace ShopOnline.Api.Controllers
 						await file.CopyToAsync(fs);
 					}
 
-
+					var userName = User.Identity.Name;
+					if (userName == null)
+						throw new Exception("User not found");
+					var user = await _userRepository.GetUserByName(x => x.UserName == userName);
+					await _userRepository.UploadImage("/Image/unsage_uploads/" + trustedFileNameForFileStorage, user);
 					uploadResultDto.StoredFileName = trustedFileNameForFileStorage;
 					uploadResults.Add(uploadResultDto);
 				}
