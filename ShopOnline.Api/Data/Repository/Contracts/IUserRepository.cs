@@ -11,6 +11,7 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 		Task<User> GetUser(int id);
 		Task<User> GetUserByName(Expression<Func<User, bool>> expression,string? includeProperty = null);
 		Task RefreshToken(string token, User user);
+		Task<User> UploadImage(string imageUrl, User user);
 
 	}
 }

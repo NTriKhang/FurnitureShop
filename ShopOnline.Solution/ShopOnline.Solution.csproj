@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Images\Authorized\" />
+    <Folder Include="wwwroot\Images\User\" />
   </ItemGroup>
 
 </Project>

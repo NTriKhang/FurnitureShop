@@ -81,6 +81,7 @@ namespace ShopOnline.API.Extensions
 				Id = user.Id,
 				UserRole = (user.userRole?.Name == null) ? string.Empty : user.userRole.Name,
 				Token = user.Token ?? null,
+				ImageUrl = user.ImageUrl,
 				TokenCreated = user.Created ?? null,
 				TokenExpires = user.Expires ?? null,
 			};

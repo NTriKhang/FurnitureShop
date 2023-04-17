@@ -5,7 +5,7 @@
 		<a class="btn btn-primary" href="Register">Register</a>
 	</NotAuthorized>
 	<Authorized>
-		<span style="margin-right:auto" class="btn btn-info">Hello @context.User.Identity.Name</span>
+		<a href="/Profile" style="margin-right:auto; text-decoration:none" class="btn btn-info">Hello @context.User.Identity.Name</a>
 	</Authorized>
 </AuthorizeView>
 

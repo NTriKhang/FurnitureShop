@@ -17,7 +17,8 @@ namespace ShopOnline.Solution.Pages.ProductDetail
 		private ICartItemServices cartItemServices { get; set; }
 		[Inject]
 		private NavigationManager navigationManager { get; set; }
-
+		[Inject]
+		private ILocalStorageService localStorageService { get; set; }
         public ProductDto product { set; get; }
 
 		protected override async Task OnInitializedAsync()
@@ -36,6 +37,7 @@ namespace ShopOnline.Solution.Pages.ProductDetail
 		{
 			try
 			{
+				cartItemToAddDto.UserName = await localStorageService.GetItemAsStringAsync(utility.UserName);
 				var cartItemDto = await cartItemServices.AddItem(cartItemToAddDto);
 				navigationManager.NavigateTo("/Cart");
 			}

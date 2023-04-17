@@ -39,8 +39,8 @@ namespace ShopOnline.Solution.Pages.Login
 			{
 				var token = await _userServices.LoginUser(userLoginDto);
 				Console.WriteLine(token);
-				await _localStorageService.SetItemAsStringAsync("UserName", userLoginDto.UserName);
-				await _localStorageService.SetItemAsync("token", token);
+				await _localStorageService.SetItemAsStringAsync(utility.UserName, userLoginDto.UserName);
+				await _localStorageService.SetItemAsync(utility.TokenJwt, token);
 				await _authorizeState.GetAuthenticationStateAsync();
 				_navigationManager.NavigateTo("/");
 			}

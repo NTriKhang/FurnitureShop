@@ -23,5 +23,6 @@ namespace ShopOnline.API.Entities
         public string? Token { get; set; } = string.Empty;
         public DateTime? Created { get; set; }
         public DateTime? Expires { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
     }
 }

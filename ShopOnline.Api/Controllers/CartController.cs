@@ -30,7 +30,7 @@ namespace ShopOnline.API.Controllers
 		{
 			try
 			{
-				var userId = await GetUserId();
+				var userId = await GetUserId(userName);
 				var items = await cartRepository.GetItems(userId);
 				if (items == null)
 				{
@@ -73,16 +73,11 @@ namespace ShopOnline.API.Controllers
 			}
 		}
 		[NonAction]
-		private async Task<int> GetUserId()
+		private async Task<int> GetUserId(string userName)
 		{
 			try
 			{
-				var user = User.Identity.Name;
-				if (string.IsNullOrEmpty(user))
-				{
-					throw new Exception("Can't find this user");
-				}
-				var userId = userRepository.GetUserByName(x => x.UserName == user).GetAwaiter().GetResult().Id;
+				var userId = userRepository.GetUserByName(x => x.UserName == userName).GetAwaiter().GetResult().Id;
 				return userId;
 			}
 			catch (Exception)
@@ -96,8 +91,7 @@ namespace ShopOnline.API.Controllers
 		{
 			try
 			{
-
-				cartItemToAddDto.UserId = await GetUserId();
+				cartItemToAddDto.UserId = await GetUserId(cartItemToAddDto.UserName);
 				var newCartItem = await cartRepository.AddItem(cartItemToAddDto);
 				if (newCartItem == null)
 				{

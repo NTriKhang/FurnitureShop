@@ -8,7 +8,8 @@ namespace ShopOnline.Models.dtos
 {
     public class CartItemToAddDto
     {
-        public int UserId { get; set; } 
+        public string UserName { get; set; } = string.Empty;
+        public int UserId { get; set; }
         public int ProductId { get; set; }  
         public int Qty { get; set; }    
     }

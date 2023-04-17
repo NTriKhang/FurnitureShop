@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
@@ -8,7 +9,9 @@ using ShopOnline.Api.Data.Repository.Contracts;
 using ShopOnline.API.Entities;
 using ShopOnline.API.Extensions;
 using ShopOnline.Models.dtos;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -19,11 +22,60 @@ namespace ShopOnline.Api.Controllers
 	public class UserManagementController : ControllerBase
 	{
 		private readonly IUserRepository _userRepository;
-		public UserManagementController(IUserRepository userRepository)
+		private readonly IWebHostEnvironment _webHostEnvironment;
+		public UserManagementController(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment)
 		{
+			_webHostEnvironment = webHostEnvironment;
 			_userRepository = userRepository;
 		}
-		[HttpGet("{name}",Name = "getUser")]
+		[HttpPost("UploadImage")]
+		[Authorize]
+		public async Task<ActionResult<List<UploadResultDto>>> UploadImage([FromForm] List<IFormFile> files)
+		{
+			try
+			{
+				List<UploadResultDto> uploadResults = new List<UploadResultDto>();
+
+				foreach (var file in files)
+				{
+					UploadResultDto uploadResultDto = new UploadResultDto();
+					string trustedFileNameForFileStorage;
+					var untrustedFileName = file.FileName;
+					uploadResultDto.FileName = untrustedFileName;
+					var trustedFileNameForDisplay =
+						WebUtility.HtmlEncode(untrustedFileName);
+					trustedFileNameForFileStorage = Path.GetRandomFileName();
+					var path = Path.Combine(_webHostEnvironment.ContentRootPath,
+						"unsafe_uploads",
+						trustedFileNameForFileStorage);
+					using (FileStream fs = new(path, FileMode.Create))
+					{
+						await file.CopyToAsync(fs);
+					}
+
+
+					uploadResultDto.StoredFileName = trustedFileNameForFileStorage;
+					uploadResults.Add(uploadResultDto);
+				}
+				return Ok(uploadResults);
+
+				//if (ImageUrl == string.Empty)
+				//	throw new Exception("Image url is requested");
+				//var userName = User.Identity.Name;
+				//if (userName == null)
+				//	throw new Exception("User identity is not occur");
+				//var user = await _userRepository.GetUserByName(x => x.UserName == userName);
+				//if (user == null)
+				//	throw new Exception("User not found");
+				//var result = await _userRepository.UploadImage(ImageUrl, user);
+				//return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest("It go into but not occur");
+			}
+		}
+		[HttpGet("{name}", Name = "getUser")]
 		public async Task<ActionResult<UserDto>> GetUser(string name)
 		{
 			try
@@ -40,14 +92,14 @@ namespace ShopOnline.Api.Controllers
 				return StatusCode(500, ex.Message);
 			}
 		}
-        [HttpPost("register")]
+		[HttpPost("register")]
 		public async Task<ActionResult<UserDto>> Register([FromBody] UserRegisterDto userRegisterDto)
 		{
 			try
 			{
 				if (ModelState.IsValid)
 				{
-					if(userRegisterDto != null)
+					if (userRegisterDto != null)
 					{
 						ScriptPassword(userRegisterDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 						var userToAdd = new User()
@@ -75,7 +127,7 @@ namespace ShopOnline.Api.Controllers
 		}
 		private void ScriptPassword(string passwordRequest, out byte[] passwordHash, out byte[] passwordSalt)
 		{
-			using(var hmac = new HMACSHA512())
+			using (var hmac = new HMACSHA512())
 			{
 				passwordSalt = hmac.Key;
 				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(passwordRequest));
@@ -87,10 +139,10 @@ namespace ShopOnline.Api.Controllers
 		{
 			try
 			{
-                var user = await _userRepository.GetUserByName(x => x.UserName == userLoginDto.UserName, includeProperty: "userRole");
-				if(user != null)
+				var user = await _userRepository.GetUserByName(x => x.UserName == userLoginDto.UserName, includeProperty: "userRole");
+				if (user != null)
 				{
-					if(!ValidatePassword(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
+					if (!ValidatePassword(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
 					{
 						return BadRequest("wrong password");
 					}
@@ -99,7 +151,7 @@ namespace ShopOnline.Api.Controllers
 					return Ok(jwtToken);
 				}
 				return BadRequest("wrong user name");
-            }
+			}
 			catch (Exception ex)
 			{
 				return StatusCode(StatusCodes.Status404NotFound, ex.Message);
@@ -125,7 +177,7 @@ namespace ShopOnline.Api.Controllers
 		}
 		private bool ValidatePassword(string password, byte[] passwordHash, byte[] passwordSalt)
 		{
-			using(var hmac = new HMACSHA512(passwordSalt))
+			using (var hmac = new HMACSHA512(passwordSalt))
 			{
 				var passwordHashCheck = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 				return passwordHashCheck.SequenceEqual(passwordHash);
