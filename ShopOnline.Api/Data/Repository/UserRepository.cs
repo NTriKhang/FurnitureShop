@@ -12,28 +12,28 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 	public class UserRepository : IUserRepository
 	{
 		private readonly ShopOlineDbContext _dbContext;
-        public UserRepository(ShopOlineDbContext dbContext)
-        {
+		public UserRepository(ShopOlineDbContext dbContext)
+		{
 			_dbContext = dbContext;
-        }
+		}
 
 		public async Task<User> GetUserByName(Expression<Func<User, bool>> expression, string? includeProperty = null)
 		{
 			IQueryable<User> query = _dbContext.Users.Where(expression);
 			if (query.Count() < 0)
 				return null;
-			if(includeProperty != null)
+			if (includeProperty != null)
 			{
-				foreach(var includeProp in includeProperty.Split(","))
+				foreach (var includeProp in includeProperty.Split(","))
 				{
 					query = query.Include(includeProp.Trim());
 				}
 			}
 			return await query.FirstOrDefaultAsync();
 		}
-        public async Task<User> AddUser(User userToAdd)
+		public async Task<User> AddUser(User userToAdd)
 		{
-			if(userToAdd != null)
+			if (userToAdd != null)
 			{
 				var user = await _dbContext.Users.AddAsync(userToAdd);
 				await _dbContext.SaveChangesAsync();
@@ -41,7 +41,16 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 			}
 			return null;
 		}
-
+		public async Task UploadImage(string imageUrl, User user)
+		{
+			if (imageUrl != null)
+			{
+				user.ImageUrl = imageUrl;
+				await _dbContext.SaveChangesAsync();
+				return;
+			}
+			throw new NotImplementedException();
+		}
 		public Task<User> DeleteUser(User userToAdd)
 		{
 			throw new NotImplementedException();
@@ -49,7 +58,7 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 
 		public async Task<User> GetUser(int id)
 		{
-			if(id != 0)
+			if (id != 0)
 			{
 				var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
 				if (user != null)

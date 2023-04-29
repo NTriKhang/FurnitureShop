@@ -12,6 +12,7 @@ namespace ShopOnline.Models.dtos
 		public string UserName { get; set; } = string.Empty;
 		public string? UserRole { get; set; } = string.Empty;
 		public string? Token { set; get; } = string.Empty;
+		public string ImageUrl { set; get; } = string.Empty;
 		public DateTime? TokenCreated { set; get; } 
 		public DateTime? TokenExpires { set; get; }
 	}

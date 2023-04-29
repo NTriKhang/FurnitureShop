@@ -1,0 +1,44 @@
+﻿@page "/Profile";
+@inherits ProfileBase;
+
+@*<div style="z-index:1">
+    <InputFile OnChange="UpLoad_Img" multiple>UpLoad Image</InputFile>
+</div>*@
+<section class="h-100 gradient-custom-2">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col col-lg-9 col-xl-7">
+                <div class="card">
+                    <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+                        <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                                 alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                                 style="width: 150px; z-index: 1">
+                                <div style="z-index:1">
+                                    Edit profile
+                                    <InputFile OnChange="UpLoad_Img"  multiple>UpLoad Image</InputFile>
+                                </div>
+                        </div>
+                        <div class="ms-3" style="margin-top: 130px;">
+                            <h5>Andy Horwitz</h5>
+                            <p>New York</p>
+                        </div>
+                    </div>
+                    <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                        <div class="d-flex justify-content-end text-center py-1">
+                            <div>
+                                <p class="mb-1 h5">253</p>
+                                <p class="small text-muted mb-0"><a href="#" style="text-decoration:none">Purchase history</a></p>
+                            </div>
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+
+}

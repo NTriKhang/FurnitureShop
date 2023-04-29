@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopOnline.API.Data;
 
@@ -11,9 +12,10 @@ using ShopOnline.API.Data;
 namespace ShopOnline.API.Migrations
 {
     [DbContext(typeof(ShopOlineDbContext))]
-    partial class ShopOlineDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230415030604_addImageUrlToUser")]
+    partial class addImageUrlToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

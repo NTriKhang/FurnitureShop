@@ -2,10 +2,11 @@ global using Microsoft.AspNetCore.Components.Authorization;
 global using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using ShopOnline;
 using ShopOnline.Solution.Services;
 using ShopOnline.Solution.Services.Contract;
 using ShopOnline.Solution;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
 
 internal class Program
 {
@@ -22,6 +23,7 @@ internal class Program
 		builder.Services.AddScoped<IReviewServices, ReviewServices>();	
 		builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 		builder.Services.AddAuthorizationCore();
+
 		builder.Services.AddBlazoredLocalStorage();
 
 		await builder.Build().RunAsync();

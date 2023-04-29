@@ -24,7 +24,7 @@ namespace ShopOnline.Solution.Pages.Cart
 		{
 			try
 			{
-				var UserName = await localStorageService.GetItemAsStringAsync("UserName");
+				var UserName = await localStorageService.GetItemAsStringAsync(utility.UserName);
 				cartItems = await cartItemServices.GetItems(UserName);
                 CartChange();
             }

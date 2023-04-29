@@ -1,4 +1,5 @@
-﻿using ShopOnline.Models.dtos;
+﻿using Microsoft.AspNetCore.Http;
+using ShopOnline.Models.dtos;
 using ShopOnline.Solution.Services.Contract;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -12,6 +13,26 @@ namespace ShopOnline.Solution.Services
         {
             this.httpClient = httpClient;
         }
+		public async Task<List<UploadResultDto>> UploadImage(MultipartFormDataContent content)
+		{
+			try
+			{
+				var response = await httpClient.PostAsync("/api/UserManagement/UploadImage", content);
+				if (response.IsSuccessStatusCode)
+				{
+					if (response.Content != null)
+					{
+						return await response.Content.ReadFromJsonAsync<List<UploadResultDto>>();
+					}
+				}
+				throw new Exception("something were wrong");
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception(ex.Message);
+			}
+		}
 		public async Task<UserDto> GetUserByName(string UserName)
 		{
 			try
