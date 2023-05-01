@@ -16,7 +16,7 @@ internal class Program
 		builder.RootComponents.Add<App>("#app");
 		builder.RootComponents.Add<HeadOutlet>("head::after");
 
-		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:44301/") });
+		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7182/") });
 		builder.Services.AddScoped<IProductServices, ProductServices>();
 		builder.Services.AddScoped<ICartItemServices, CartItemServices>();
 		builder.Services.AddScoped<IUserServices, UserServices>();
