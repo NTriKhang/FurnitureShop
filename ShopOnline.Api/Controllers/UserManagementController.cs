@@ -28,55 +28,39 @@ namespace ShopOnline.Api.Controllers
 			_webHostEnvironment = webHostEnvironment;
 			_userRepository = userRepository;
 		}
-		[HttpPost("UploadImage")]
-		[Authorize]
-		public async Task<ActionResult<List<UploadResultDto>>> UploadImage([FromForm] List<IFormFile> files)
+		[HttpPatch(nameof(UpdateImage))]
+		public async Task<ActionResult<UserDto>> UpdateImage([FromBody] ImageUpdateDto imageUpdateDto)
 		{
 			try
 			{
-				List<UploadResultDto> uploadResults = new List<UploadResultDto>();
-
-				foreach (var file in files)
+				if(imageUpdateDto != null)
 				{
-					UploadResultDto uploadResultDto = new UploadResultDto();
-					string trustedFileNameForFileStorage;
-					var untrustedFileName = file.FileName;
-					uploadResultDto.FileName = untrustedFileName;
-					var trustedFileNameForDisplay =
-						WebUtility.HtmlEncode(untrustedFileName);
-					trustedFileNameForFileStorage = Path.GetRandomFileName();
-					var path = Path.Combine(_webHostEnvironment.WebRootPath, "Image",
-						"unsafe_uploads",
-						trustedFileNameForFileStorage);
-					using (FileStream fs = new(path, FileMode.Create))
-					{
-						await file.CopyToAsync(fs);
-					}
-
-					var userName = User.Identity.Name;
+					var path = _webHostEnvironment.WebRootPath.Replace("Api", "Solution");
+					string userName = imageUpdateDto.userName;
 					if (userName == null)
-						throw new Exception("User not found");
+						throw new Exception("data is required");
 					var user = await _userRepository.GetUserByName(x => x.UserName == userName);
-					await _userRepository.UploadImage("/Image/unsage_uploads/" + trustedFileNameForFileStorage, user);
-					uploadResultDto.StoredFileName = trustedFileNameForFileStorage;
-					uploadResults.Add(uploadResultDto);
-				}
-				return Ok(uploadResults);
+					if (user == null)
+						throw new Exception("User not found");
+					var imgName = Guid.NewGuid();
+					var imgPath = "\\Images\\User\\" + imgName + imageUpdateDto.fileName;
 
-				//if (ImageUrl == string.Empty)
-				//	throw new Exception("Image url is requested");
-				//var userName = User.Identity.Name;
-				//if (userName == null)
-				//	throw new Exception("User identity is not occur");
-				//var user = await _userRepository.GetUserByName(x => x.UserName == userName);
-				//if (user == null)
-				//	throw new Exception("User not found");
-				//var result = await _userRepository.UploadImage(ImageUrl, user);
-				//return Ok(result);
+					var oldPath = path + user.ImageUrl;
+					if(System.IO.File.Exists(oldPath))
+					{
+						System.IO.File.Delete(oldPath);
+					}
+					var buf = Convert.FromBase64String(imageUpdateDto.base64data);
+					await System.IO.File.WriteAllBytesAsync(path + imgPath, buf);
+					await _userRepository.UploadImage(imgPath, user);
+					var userDto = user.ConvertToDto();
+					return Ok(userDto);
+				}
+				return BadRequest();
 			}
 			catch (Exception ex)
 			{
-				return BadRequest("It go into but not occur");
+				throw new Exception(ex.Message);
 			}
 		}
 		[HttpGet("{name}", Name = "getUser")]

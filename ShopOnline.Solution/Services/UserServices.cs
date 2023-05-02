@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using ShopOnline.Models.dtos;
 using ShopOnline.Solution.Services.Contract;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 
 namespace ShopOnline.Solution.Services
 {
@@ -13,16 +15,18 @@ namespace ShopOnline.Solution.Services
         {
             this.httpClient = httpClient;
         }
-		public async Task<List<UploadResultDto>> UploadImage(MultipartFormDataContent content)
+		public async Task<UserDto> UploadImage(ImageUpdateDto img)
 		{
 			try
 			{
-				var response = await httpClient.PostAsync("/api/UserManagement/UploadImage", content);
-				if (response.IsSuccessStatusCode)
+                var jsonContent = JsonConvert.SerializeObject(img);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json-patch+json");
+                var response = await httpClient.PatchAsync($"/api/UserManagement/UpdateImage", content);
+                if (response.IsSuccessStatusCode)
 				{
 					if (response.Content != null)
 					{
-						return await response.Content.ReadFromJsonAsync<List<UploadResultDto>>();
+						return await response.Content.ReadFromJsonAsync<UserDto>();
 					}
 				}
 				throw new Exception("something were wrong");

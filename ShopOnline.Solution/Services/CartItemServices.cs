@@ -155,10 +155,10 @@ namespace ShopOnline.Solution.Services
 			{
 				var jsonContent = JsonConvert.SerializeObject(updateQty);
 				var content = new StringContent(jsonContent, Encoding.UTF8, "application/json-patch+json");
-				var respone = await httpClient.PatchAsync($"/api/Cart/{updateQty.Id}", content);
-				if(respone.IsSuccessStatusCode)
+				var response = await httpClient.PatchAsync($"/api/Cart/{updateQty.Id}", content);
+				if(response.IsSuccessStatusCode)
 				{
-					return await respone.Content.ReadFromJsonAsync<CartItemDto>();
+					return await response.Content.ReadFromJsonAsync<CartItemDto>();
 				}
 				return null;
 			}

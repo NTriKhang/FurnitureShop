@@ -16,7 +16,7 @@ namespace ShopOnline.Solution.Pages.Profile
         [Inject]
         private ILocalStorageService localStorageService { set; get; }
         [Inject]
-        private HttpClient httpClient { set; get; }
+        private NavigationManager navigationManager { set; get; }
         protected UserDto user { get; set; } = new UserDto();
         protected override async Task OnInitializedAsync()
         {
@@ -26,7 +26,7 @@ namespace ShopOnline.Solution.Pages.Profile
                 user = await userServices.GetUserByName(UserName);
                 if (user.ImageUrl == string.Empty)
                 {
-
+                    user.ImageUrl = "\\Images\\hinh-meme-meo-cuoi-deu.png";
                 }
             }
             catch (Exception)
@@ -35,23 +35,26 @@ namespace ShopOnline.Solution.Pages.Profile
                 throw;
             }
         }
-        protected List<string> fileName = new List<string>();
-        int maxAllowedFiles = 1;
-        long maxFileSize = int.MaxValue;
         protected async Task UpLoad_Img(InputFileChangeEventArgs e)
         {
-            using var content = new MultipartFormDataContent();
-            foreach(var file in e.GetMultipleFiles(maxAllowedFiles))
+            var file = e.File;
+            if(file != null)
             {
-                var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                fileName.Add(file.Name);
-                content.Add(
-                    content: fileContent,
-					name: "\"files\"",
-					fileName: file.Name);
+                var resizeFile = await file.RequestImageFileAsync(file.ContentType, 640, 480);
+                var buff = new byte[resizeFile.Size];
+                using(var stream = resizeFile.OpenReadStream())
+                {
+                    await stream.ReadAsync(buff);
+                }
+                var fileUpdate = new ImageUpdateDto()
+                {
+                    fileName = file.Name,
+                    base64data = Convert.ToBase64String(buff),
+                    userName = user.UserName,
+                };
+                var result = await userServices.UploadImage(fileUpdate);
+                user.ImageUrl = result.ImageUrl;
             }
-            var tmp = await userServices.UploadImage(content);
 
 		}
 

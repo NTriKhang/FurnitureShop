@@ -24,9 +24,4 @@
     <ProjectReference Include="..\ShopOnline.Models\ShopOnline.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\Image\unsafe_uploads\lr3zar24.tpf" />
-    <None Include="wwwroot\Image\unsafe_uploads\ofnsypv4.odu" />
-  </ItemGroup>
-
 </Project>
