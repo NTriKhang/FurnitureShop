@@ -36,10 +36,10 @@ namespace ShopOnline.Api.Controllers
 				if(imageUpdateDto != null)
 				{
 					var path = _webHostEnvironment.WebRootPath.Replace("Api", "Solution");
-					string userName = imageUpdateDto.userName;
-					if (userName == null)
+					string UserToken = imageUpdateDto.token;
+					if (UserToken == null)
 						throw new Exception("data is required");
-					var user = await _userRepository.GetUserByName(x => x.UserName == userName);
+					var user = await _userRepository.GetUser(x => x.Token == UserToken);
 					if (user == null)
 						throw new Exception("User not found");
 					var imgName = Guid.NewGuid();
@@ -64,13 +64,13 @@ namespace ShopOnline.Api.Controllers
 			}
 		}
 		[HttpGet("{name}", Name = "getUser")]
-		public async Task<ActionResult<UserDto>> GetUser(string name)
+		public async Task<ActionResult<UserDto>> GetUser(string token)
 		{
 			try
 			{
-				if (name == string.Empty)
-					throw new Exception("name is required");
-				var user = await _userRepository.GetUserByName(x => x.UserName == name, includeProperty: "userRole");
+				if (token == string.Empty)
+					throw new Exception("token is required");
+				var user = await _userRepository.GetUser(x => x.Token == token, includeProperty: "userRole");
 				if (user == null)
 					return null;
 				return user.ConvertToDto();
@@ -127,7 +127,7 @@ namespace ShopOnline.Api.Controllers
 		{
 			try
 			{
-				var user = await _userRepository.GetUserByName(x => x.UserName == userLoginDto.UserName, includeProperty: "userRole");
+				var user = await _userRepository.GetUser(x => x.UserName == userLoginDto.UserName, includeProperty: "userRole");
 				if (user != null)
 				{
 					if (!ValidatePassword(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))

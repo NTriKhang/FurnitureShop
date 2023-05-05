@@ -25,12 +25,12 @@ namespace ShopOnline.API.Controllers
 			this.userRepository = userRepository;
 		}
 		[HttpGet]
-		[Route("/GetItemsInCart/{userName}")]
-		public async Task<ActionResult<IEnumerable<CartItemDto>>> GetItems(string userName)
+		[Route("/GetItemsInCart/{Token}")]
+		public async Task<ActionResult<IEnumerable<CartItemDto>>> GetItems(string Token)
 		{
 			try
 			{
-				var userId = await GetUserId(userName);
+				var userId = await GetUserId(Token);
 				var items = await cartRepository.GetItems(userId);
 				if (items == null)
 				{
@@ -73,11 +73,11 @@ namespace ShopOnline.API.Controllers
 			}
 		}
 		[NonAction]
-		private async Task<int> GetUserId(string userName)
+		private async Task<int> GetUserId(string token)
 		{
 			try
 			{
-				var userId = userRepository.GetUserByName(x => x.UserName == userName).GetAwaiter().GetResult().Id;
+				var userId = userRepository.GetUser(x => x.Token == token).GetAwaiter().GetResult().Id;
 				return userId;
 			}
 			catch (Exception)
@@ -91,7 +91,7 @@ namespace ShopOnline.API.Controllers
 		{
 			try
 			{
-				cartItemToAddDto.UserId = await GetUserId(cartItemToAddDto.UserName);
+				cartItemToAddDto.UserId = await GetUserId(cartItemToAddDto.Token);
 				var newCartItem = await cartRepository.AddItem(cartItemToAddDto);
 				if (newCartItem == null)
 				{

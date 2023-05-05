@@ -25,6 +25,8 @@ namespace ShopOnline.Api.Controllers
 			try
 			{
 				reviewToAdd.UserName = User.Identity?.Name ?? "Not found";
+				if (reviewToAdd.UserName == "Not found")
+					throw new Exception("User not found");
 				var newReview = await reviewRepository.AddReview(reviewToAdd);
 				if (newReview == null)
 					throw new Exception("Add review is not work");

@@ -98,11 +98,11 @@ namespace ShopOnline.Api.Controllers
 			return session.Id;
 		}
 		[HttpPost("success")]
-		public async Task<IEnumerable<CartItemDto>> CheckoutSuccess([FromBody]string UserName)
+		public async Task<IEnumerable<CartItemDto>> CheckoutSuccess([FromBody]string Token)
 		{
 			try
 			{
-				var userId = _userRepository.GetUserByName(x => x.UserName == UserName).GetAwaiter().GetResult().Id;
+				var userId = _userRepository.GetUser(x => x.Token == Token).GetAwaiter().GetResult().Id;
 				if(userId == 0)
                     throw new Exception($"userId is null");
                 var cartItem = await _cartRepository.GetItems(userId);
