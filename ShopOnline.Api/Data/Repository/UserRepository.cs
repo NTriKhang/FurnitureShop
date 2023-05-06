@@ -59,7 +59,7 @@ namespace ShopOnline.Api.Data.Repository.Contracts
 			{
 				foreach(var include in includeProperty.Split(','))
 				{
-					query.Include(include.Trim());
+					query = query.Include(include.Trim());
 				}
 			}
 			return await query.FirstOrDefaultAsync();

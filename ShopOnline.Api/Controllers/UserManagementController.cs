@@ -63,7 +63,7 @@ namespace ShopOnline.Api.Controllers
 				throw new Exception(ex.Message);
 			}
 		}
-		[HttpGet("{name}", Name = "getUser")]
+		[HttpGet("{token}", Name = "getUser")]
 		public async Task<ActionResult<UserDto>> GetUser(string token)
 		{
 			try

@@ -6,7 +6,7 @@ namespace ShopOnline.Solution.Services.Contract
 	{
 		Task<string> LoginUser(UserLoginDto userLoginDto);
 		Task<UserDto> RegisterUser(UserRegisterDto userRegisterDto);
-		Task<UserDto> GetUserByName(string UserName);
+		Task<UserDto> GetUser(string Token);
 		Task<UserDto> UploadImage(ImageUpdateDto img);
 	}
 }

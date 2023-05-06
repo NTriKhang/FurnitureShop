@@ -77,8 +77,8 @@ namespace ShopOnline.API.Controllers
 		{
 			try
 			{
-				var userId = userRepository.GetUser(x => x.Token == token).GetAwaiter().GetResult().Id;
-				return userId;
+				var user = await userRepository.GetUser(x => x.Token == token);
+				return user.Id;
 			}
 			catch (Exception)
 			{

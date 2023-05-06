@@ -70,12 +70,12 @@ namespace ShopOnline.Solution.Services
 
 		}
 
-		public async Task CheckOutSuccess(string UserName)
+		public async Task CheckOutSuccess(string Token)
 		{
 			try
 			{
 				
-				var response = await httpClient.PostAsJsonAsync("/api/CheckoutApp/success", UserName);
+				var response = await httpClient.PostAsJsonAsync("/api/CheckoutApp/success", Token);
 				if (response.IsSuccessStatusCode)
 				{
 					if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
@@ -116,11 +116,11 @@ namespace ShopOnline.Solution.Services
 			}
 		}
 
-		public async Task<List<CartItemDto>> GetItems(string UserName)
+		public async Task<List<CartItemDto>> GetItems(string Token)
 		{
 			try
 			{
-				var response = await httpClient.GetAsync($"/GetItemsInCart/{UserName}");
+				var response = await httpClient.GetAsync($"/GetItemsInCart/{Token}");
 				if (response.IsSuccessStatusCode)
 				{
 					if (response.StatusCode == System.Net.HttpStatusCode.NoContent)

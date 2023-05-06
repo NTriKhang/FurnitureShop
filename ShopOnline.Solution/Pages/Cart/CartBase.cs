@@ -24,8 +24,8 @@ namespace ShopOnline.Solution.Pages.Cart
 		{
 			try
 			{
-				var UserName = await localStorageService.GetItemAsStringAsync(utility.UserName);
-				cartItems = await cartItemServices.GetItems(UserName);
+				var Token = await localStorageService.GetItemAsync<string>(utility.TokenJwt);
+				cartItems = await cartItemServices.GetItems(Token);
                 CartChange();
             }
 			catch (Exception)
@@ -33,7 +33,7 @@ namespace ShopOnline.Solution.Pages.Cart
 				throw;
 			}
 		}
-		protected async Task CheckOut(List<CartItemDto> cartItemDtos)
+		protected async Task CheckOut()
 		{
 			try
 			{

@@ -37,7 +37,7 @@ namespace ShopOnline.Solution.Pages.ProductDetail
 		{
 			try
 			{
-				cartItemToAddDto.UserName = await localStorageService.GetItemAsStringAsync(utility.UserName);
+				cartItemToAddDto.Token = await localStorageService.GetItemAsync<string>(utility.TokenJwt);
 				var cartItemDto = await cartItemServices.AddItem(cartItemToAddDto);
 				navigationManager.NavigateTo("/Cart");
 			}

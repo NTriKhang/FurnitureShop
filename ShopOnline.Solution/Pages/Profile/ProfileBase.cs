@@ -22,8 +22,8 @@ namespace ShopOnline.Solution.Pages.Profile
         {
             try
             {
-                var UserName = await localStorageService.GetItemAsStringAsync(utility.UserName);
-                user = await userServices.GetUserByName(UserName);
+                var Token = await localStorageService.GetItemAsync<string>(utility.TokenJwt);
+                user = await userServices.GetUser(Token);
                 if (user.ImageUrl == string.Empty)
                 {
                     user.ImageUrl = "\\Images\\hinh-meme-meo-cuoi-deu.png";
@@ -50,7 +50,7 @@ namespace ShopOnline.Solution.Pages.Profile
                 {
                     fileName = file.Name,
                     base64data = Convert.ToBase64String(buff),
-                    userName = user.UserName,
+                    token = user.Token,
                 };
                 var result = await userServices.UploadImage(fileUpdate);
                 user.ImageUrl = result.ImageUrl;

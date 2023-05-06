@@ -22,12 +22,12 @@ namespace ShopOnline.Solution.Pages.Product
         protected override async Task OnInitializedAsync()
         {
             ProductDtos = await productServices.GetItems();
-            string UserName = string.Empty;
-            bool isContaint = await localStorageService.ContainKeyAsync("UserName");
+            string Token = string.Empty;
+            bool isContaint = await localStorageService.ContainKeyAsync(utility.TokenJwt);
 			if (isContaint == true)
             {
-                UserName = await localStorageService.GetItemAsStringAsync("UserName");
-                bool isUserExpires = await IsUserExpires(UserName);
+                Token =  await localStorageService.GetItemAsync<string>(utility.TokenJwt) ;
+                bool isUserExpires = await IsUserExpires(Token);
 
 				if (isUserExpires == false)
                 {
@@ -35,7 +35,7 @@ namespace ShopOnline.Solution.Pages.Product
 				}
                 else
                 {
-					var cartItems = await cartItemServices.GetItems(UserName);
+					var cartItems = await cartItemServices.GetItems(Token);
 					int totalQty = cartItems.Sum(x => x.Qty);
 					cartItemServices.RaiseEventOnShoppingCartChanged(totalQty);
 				}
@@ -49,13 +49,12 @@ namespace ShopOnline.Solution.Pages.Product
         private async Task Logout()
         {
 			await localStorageService.RemoveItemAsync("token");
-			await localStorageService.RemoveItemAsync("UserName");
 			cartItemServices.RaiseEventOnShoppingCartChanged(0);
 			await AuthStateProvider.GetAuthenticationStateAsync();
 		}
-        private async Task<bool> IsUserExpires(string UserName)
+        private async Task<bool> IsUserExpires(string Token)
         {
-            var user = await userServices.GetUserByName(UserName);
+            var user = await userServices.GetUser(Token);
             DateTime now = DateTime.Now;
             if(user != null)
             {

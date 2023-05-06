@@ -37,11 +37,11 @@ namespace ShopOnline.Solution.Services
 				throw new Exception(ex.Message);
 			}
 		}
-		public async Task<UserDto> GetUserByName(string UserName)
+		public async Task<UserDto> GetUser(string Token)
 		{
 			try
 			{
-				var response = await httpClient.GetAsync($"/api/UserManagement/{UserName}");
+				var response = await httpClient.GetAsync($"/api/UserManagement/{Token}");
 				if (response.IsSuccessStatusCode)
 				{
 					if (response.StatusCode == System.Net.HttpStatusCode.NoContent)

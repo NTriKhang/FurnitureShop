@@ -10,14 +10,14 @@ namespace ShopOnline.Solution.Pages.Cart
 		protected ICartItemServices cartItemServices { set; get; }
 		[Inject]
 		private ILocalStorageService localStorageService { set; get; }
-		public string UserName { set; get; }
+		public string Token { set; get; } = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
 			try
 			{
-				UserName = await localStorageService.GetItemAsStringAsync("UserName");
-				await cartItemServices.CheckOutSuccess(UserName);
+				Token = await localStorageService.GetItemAsync<string>(utility.TokenJwt);
+				await cartItemServices.CheckOutSuccess(Token);
 			}
 			catch (Exception)
 			{
